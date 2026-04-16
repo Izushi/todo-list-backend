@@ -1,0 +1,50 @@
+# このファイルがあることで、プロジェクトに入ると自動で適切なバージョンの
+# Go や gomigrate が使えるようになる (mise install で一括インストール)
+
+[tools]
+go = "1.26"
+gomigrate = "4"
+
+# .env を自動で読み込む (mise run ... 実行時に環境変数がセットされる)
+[env]
+_.file = ".env"
+
+# ---- タスク定義 (以前の Makefile 相当) ----
+# 使い方: mise run <task名>   または   mise r <task名>
+# 一覧表示: mise tasks
+
+[tasks.db-up]
+description = "PostgreSQL コンテナを起動"
+run = "docker compose up -d"
+
+[tasks.db-down]
+description = "PostgreSQL コンテナを停止"
+run = "docker compose down"
+
+[tasks.db-logs]
+description = "PostgreSQL のログを見る"
+run = "docker compose logs -f postgres"
+
+[tasks.db-shell]
+description = "psql で DB に入る"
+run = 'docker compose exec postgres psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
+
+[tasks.migrate-up]
+description = "マイグレーションを全部適用"
+run = 'migrate -path ./migrations -database "$DATABASE_URL" up'
+
+[tasks.migrate-down]
+description = "直近1つのマイグレーションをロールバック"
+run = 'migrate -path ./migrations -database "$DATABASE_URL" down 1'
+
+[tasks.migrate-create]
+description = "新しいマイグレーションファイルを作る (例: mise run migrate-create add_xxx)"
+run = "migrate create -ext sql -dir migrations -seq"
+
+[tasks.run]
+description = "サーバー起動"
+run = "go run ./cmd/server"
+
+[tasks.tidy]
+description = "go mod tidy (依存を整理)"
+run = "go mod tidy"
