@@ -33,10 +33,6 @@ run = 'docker compose exec postgres psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
 description = "マイグレーションを全部適用"
 run = 'migrate -path ./migrations -database "$DATABASE_URL" up'
 
-[tasks.migrate-down]
-description = "直近1つのマイグレーションをロールバック"
-run = 'migrate -path ./migrations -database "$DATABASE_URL" down 1'
-
 [tasks.migrate-create]
 description = "新しいマイグレーションファイルを作る (例: mise run migrate-create add_xxx)"
 run = "migrate create -ext sql -dir migrations -seq"

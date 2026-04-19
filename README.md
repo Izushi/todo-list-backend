@@ -50,7 +50,6 @@ mise tasks                            # タスク一覧
 mise run db-up                        # DB起動
 mise run db-shell                     # psqlでDBに入る
 mise run migrate-up                   # マイグレーション適用
-mise run migrate-down                 # 直近1つをロールバック
 mise run migrate-create add_something # 新しいマイグレーションファイル作成
 mise run run                          # サーバー起動
 ```
