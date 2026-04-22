@@ -14,8 +14,8 @@ type Deps struct {
 // RegisterUserRoutes は user 関連のルートを mux に登録する。
 // Go 1.22+ の http.ServeMux パターン機能(メソッド + パス)を使用。
 func RegisterUserRoutes(mux *http.ServeMux, d Deps) {
-	h := New(d.CreateUserUC)
+	createH := NewCreateHandler(d.CreateUserUC)
 
 	// 認証不要
-	mux.HandleFunc("POST /users", h.Create)
+	mux.HandleFunc("POST /users", createH.Handle)
 }
