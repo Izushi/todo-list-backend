@@ -9,10 +9,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 
-	handlerpkg "github.com/maya-konnichiha/todo-list-backend/internal/handler"
-	handleruser "github.com/maya-konnichiha/todo-list-backend/internal/handler/user"
-	repouser "github.com/maya-konnichiha/todo-list-backend/internal/repository/user"
-	ucuser "github.com/maya-konnichiha/todo-list-backend/internal/usecase/user"
+	"github.com/maya-konnichiha/todo-list-backend/internal/handler"
+	"github.com/maya-konnichiha/todo-list-backend/internal/registry"
 )
 
 func main() {
@@ -40,12 +38,13 @@ func main() {
 	}
 	slog.Info("connected to PostgreSQL")
 
-	// DI 配線: repository -> usecase -> handler -> router
-	userRepo := repouser.New(pool)
-	userUC := ucuser.New(userRepo)
-	userH := handleruser.New(userUC)
+	// DI 配線は registry に集約
+	deps := registry.NewDeps(registry.NewDepsParams{
+		DB:     pool,
+		Logger: slog.Default(),
+	})
 
-	router := handlerpkg.NewRouter(userH)
+	router := handler.NewRouter(deps)
 
 	port := os.Getenv("APP_PORT")
 	if port == "" {

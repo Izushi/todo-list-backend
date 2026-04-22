@@ -1,18 +1,31 @@
 package handler
 
 import (
+	"log/slog"
 	"net/http"
 
+	"github.com/jackc/pgx/v5/pgxpool"
+
 	handleruser "github.com/maya-konnichiha/todo-list-backend/internal/handler/user"
+	ucuser "github.com/maya-konnichiha/todo-list-backend/internal/usecase/user"
 )
 
+// Deps はアプリケーション全体の依存関係を集約した構造体。
+// registry.NewDeps で生成し、NewRouter に渡す。
+type Deps struct {
+	Logger *slog.Logger
+	DBPool *pgxpool.Pool
+	UserUC *ucuser.Usecase
+}
+
 // NewRouter はアプリケーションのルーティングを構築する。
-// Go 1.22+ の http.ServeMux パターン機能(メソッド + パス)を使用。
-func NewRouter(userHandler *handleruser.Handler) http.Handler {
+// 各エンティティごとの RegisterXxxRoutes を呼び出す。
+func NewRouter(d Deps) http.Handler {
 	mux := http.NewServeMux()
 
-	// 認証不要
-	mux.HandleFunc("POST /users", userHandler.Create)
+	handleruser.RegisterUserRoutes(mux, handleruser.Deps{
+		UC: d.UserUC,
+	})
 
 	return mux
 }

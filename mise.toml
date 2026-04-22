@@ -31,11 +31,11 @@ run = 'docker compose exec postgres psql -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
 
 [tasks.migrate-up]
 description = "マイグレーションを全部適用"
-run = 'migrate -path ./migrations -database "$DATABASE_URL" up'
+run = 'migrate -path ./internal/infrastructure/postgres/migration -database "$DATABASE_URL" up'
 
 [tasks.migrate-create]
 description = "新しいマイグレーションファイルを作る (例: mise run migrate-create add_xxx)"
-run = "migrate create -ext sql -dir migrations -seq"
+run = "migrate create -ext sql -dir internal/infrastructure/postgres/migration -seq"
 
 [tasks.run]
 description = "サーバー起動"
