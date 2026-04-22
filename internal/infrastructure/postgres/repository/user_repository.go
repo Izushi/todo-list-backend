@@ -1,4 +1,4 @@
-package user
+package repository
 
 import (
 	"context"
@@ -15,19 +15,19 @@ import (
 // https://www.postgresql.org/docs/current/errcodes-appendix.html
 const pgCodeUniqueViolation = "23505"
 
-// Repository は domainuser.UserRepository の PostgreSQL 実装。
-type Repository struct {
+// UserRepository は domainuser.UserRepository の PostgreSQL 実装。
+type UserRepository struct {
 	pool *pgxpool.Pool
 }
 
-// New は Repository を生成する。
-func New(pool *pgxpool.Pool) *Repository {
-	return &Repository{pool: pool}
+// NewUserRepository は UserRepository を生成する。
+func NewUserRepository(pool *pgxpool.Pool) *UserRepository {
+	return &UserRepository{pool: pool}
 }
 
 // Create はユーザーを INSERT し、DB で採番された行を返す。
 // email の UNIQUE 衝突は domainuser.ErrEmailAlreadyRegistered に変換する。
-func (r *Repository) Create(ctx context.Context, params domainuser.CreateParams) (*domainuser.User, error) {
+func (r *UserRepository) Create(ctx context.Context, params domainuser.CreateParams) (*domainuser.User, error) {
 	const query = `
 		INSERT INTO users (user_name, user_email)
 		VALUES ($1, $2)

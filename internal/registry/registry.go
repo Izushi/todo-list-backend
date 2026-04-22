@@ -6,7 +6,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/maya-konnichiha/todo-list-backend/internal/handler"
-	userRepo "github.com/maya-konnichiha/todo-list-backend/internal/infrastructure/postgres/repository/user"
+	"github.com/maya-konnichiha/todo-list-backend/internal/infrastructure/postgres/repository"
 	userUsecase "github.com/maya-konnichiha/todo-list-backend/internal/usecase/user"
 )
 
@@ -27,6 +27,6 @@ func NewDeps(params NewDepsParams) handler.Deps {
 
 // NewCreateUserUsecase はユーザー作成ユースケースを生成する。
 func NewCreateUserUsecase(pool *pgxpool.Pool) *userUsecase.CreateUserUsecase {
-	repo := userRepo.New(pool)
+	repo := repository.NewUserRepository(pool)
 	return userUsecase.NewCreateUserUsecase(repo)
 }
